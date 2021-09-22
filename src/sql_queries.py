@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS time(
     week INT NOT NULL,
     month INT NOT NULL,
     year INT NOT NULL,
-    weekday VARCHAR(10) NOT NULL,
+    weekday VARCHAR(10) NOT NULL
 )
 """
 
