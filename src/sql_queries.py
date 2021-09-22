@@ -1,3 +1,12 @@
+# region drop table queries
+drop_songplay = "DROP TABLE IF EXISTS songplays"
+drop_songs = "DROP TABLE IF EXISTS songs"
+drop_artists = "DROP TABLE IF EXISTS artists"
+drop_users = "DROP TABLE IF EXISTS users"
+drop_time = "DROP TABLE IF EXISTS time"
+
+drop_table_queries = [drop_songplay, drop_songs, drop_artists, drop_users, drop_time]
+
 # region create table queries
 create_songplay = """
 CREATE TABLE IF NOT EXISTS songplays(
