@@ -1,72 +1,44 @@
-from sql_queries import drop_table_queries, create_table_queries
+from src.sql_queries import drop_table_queries, create_table_queries
 import psycopg2
 import os
+from configparser import ConfigParser
 
 # connect to the database
-def create_database():
+def connect_aws():
     """
-    - Creates and connects to the sparkifydb
-    - Returns the connection and cursor to sparkifydb
+    - Creates and connects to the aws redshift
+    - Returns the connection and cursor of the database
     """
+    config = ConfigParser()
 
-    # extract db username and password
-    try:
-        user = os.environ["USER"]
-        password = os.environ["PASSWORD"]
-        host = os.environ["HOST"]
-        dbname = os.environ["DB_NAME"]
-    except KeyError as error:
-        print("Error: username and password not defined")
-        print(error)
+    config.read_file(open("./dwh.cfg"))
 
-    # connect to default database
+    KEY = config.get("AWS", "KEY")
+    SECRET = config.get("AWS", "SECRET")
+
+    DWH_DB = config.get("DWH", "DWH_DB")
+    DWH_DB_USER = config.get("DWH", "DWH_DB_USER")
+    DWH_DB_PASSWORD = config.get("DWH", "DWH_DB_PASSWORD")
+    DWH_PORT = config.get("DWH", "DWH_PORT")
+
+    DWH_ENDPOINT = config.get("DWH", "DWH_ENDPOINT")
+    DWH_ROLE_ARN = config.get("DWH", "DWH_ROLE")
+
+    conn_string = "postgresql://{}:{}@{}:{}/{}".format(
+        DWH_DB_USER, DWH_DB_PASSWORD, DWH_ENDPOINT, DWH_PORT, DWH_DB
+    )
     try:
         conn = psycopg2.connect(
-            f"host={host} dbname={dbname} user={user} password={password}"
+            conn_string,
         )
     except psycopg2.Error as error:
-        print("Unable to connect to the default database")
         print(error)
+        return None
 
-    # ? Why to set autocommit = true
-    conn.set_session(autocommit=True)
-
-    # get cursor
     try:
         cur = conn.cursor()
     except psycopg2.Error as error:
-        print("Unable to get cursor")
-        print(error)
-
-    # create sparkify database with utf8 encoding
-    # ? Why to use the encoding while creating the database
-    try:
-        cur.execute("DROP DATABASE IF EXISTS sparkifydb")
-        cur.execute(
-            "CREATE DATABASE sparkifydb WITH ENCODING 'utf8' TEMPLATE template0"
-        )
-        dbname = "sparkifydb"
-    except psycopg2.Error as error:
-        print("Error while creating sparkifydb")
-        print(error)
-
-    # connecting to sparkifydb
-    try:
-        conn = psycopg2.connect(
-            f"host={host} dbname={dbname} user={user} password={password}"
-        )
-    except psycopg2.Error as error:
-        print(f"Error while connecting to {dbname}")
-        print(error)
-
-    # conn.set_session(autocommit=True)
-
-    # get cursor
-    # ? What is cursor
-    try:
-        cur = conn.cursor()
-    except psycopg2.Error as error:
-        print(f"Unable to retrieve cursor for {dbname}")
+        print("Unable to retrieve cursor for")
         print(error)
 
     return cur, conn
@@ -109,14 +81,10 @@ def main():
     - Creates all tables needed.
     - Finally, closes the connection.
     """
-    cur, conn = create_database()
+    cur, conn = connect_aws()
 
     drop_tables(cur, conn)
 
     create_tables(cur, conn)
 
     conn.close()
-
-
-if __name__ == "__main__":
-    main()
