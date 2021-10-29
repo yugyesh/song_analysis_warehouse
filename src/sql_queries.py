@@ -1,4 +1,7 @@
 # region drop table queries
+drop_staging_songs = "DROP TABLE IF EXISTS staging_songs"
+drop_staging_events = "DROP TABLE IF EXISTS staging_events"
+
 drop_songplay = "DROP TABLE IF EXISTS songplays"
 drop_songs = "DROP TABLE IF EXISTS songs"
 drop_artists = "DROP TABLE IF EXISTS artists"
@@ -8,6 +11,42 @@ drop_time = "DROP TABLE IF EXISTS time"
 drop_table_queries = [drop_songplay, drop_songs, drop_artists, drop_users, drop_time]
 
 # region create table queries
+create_staging_songs = """
+CREATE TABLE IF NOT EXISTS staging_songs(
+    num_songs INT PRIMARY KEY,
+    artist_id VARCHAR(25) NOT NULL,
+    artist_latitude FLOAT,
+    artist_longitude FLOAT,
+    artist_location VARCHAR(100) NOT NULL,
+    artist_name VARCHAR(50) NOT NULL,
+    song_id VARCHAR(25) NOT NULL,
+    title VARCHAR(50) NOT NULL,
+    duration FLOAT NOT NULL,
+    year INT NOT NULL
+)
+"""
+create_staging_events = """
+CREATE TABLE IF NOT EXISTS staging_events(
+    artist VARCHAR(40) NOT NULL,
+    auth VARCHAR(50) NOT NULL,
+    first_name VARCHAR(20) NOT NULL,
+    gender CHAR(1) NOT NULL,
+    item_in_session INT NOT NULL,
+    last_name VARCHAR(20) NOT NULL,
+    length FLOAT NOT NULL,
+    level VARCHAR(5) NOT NULL,
+    location VARCHAR(100) NOT NULL,
+    method VARCHAR(5),
+    page VARCHAR(10),
+    registration varchar(50),
+    session_id int,
+    song VARCHAR(50) NOT NULL,
+    status INT,
+    ts BIGINT,
+    user_agent VARCHAR(100),
+    user_id INT NOT NULL
+)
+"""
 
 create_songplay = """
 CREATE TABLE IF NOT EXISTS songplays(
@@ -71,5 +110,9 @@ create_table_queries = [
     create_artist,
     create_user,
     create_time,
+    create_staging_songs,
+    create_staging_events,
 ]
 # endregion
+
+# TODO: Add insert table query for fact and dimension table
