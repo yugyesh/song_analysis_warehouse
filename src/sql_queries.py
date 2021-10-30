@@ -24,13 +24,13 @@ drop_table_queries = [
 create_staging_songs = """
 CREATE TABLE IF NOT EXISTS staging_songs(
     num_songs INT PRIMARY KEY,
-    artist_id VARCHAR(100) NOT NULL,
+    artist_id VARCHAR NOT NULL,
     artist_latitude FLOAT,
     artist_longitude FLOAT,
-    artist_location VARCHAR(80) NOT NULL,
-    artist_name VARCHAR(100) NOT NULL,
-    song_id VARCHAR(100) NOT NULL,
-    title VARCHAR(100) NOT NULL,
+    artist_location VARCHAR NOT NULL,
+    artist_name VARCHAR NOT NULL,
+    song_id VARCHAR NOT NULL,
+    title VARCHAR NOT NULL,
     duration FLOAT NOT NULL,
     year INT NOT NULL
 )
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS songplays(
 create_song = """
 CREATE TABLE IF NOT EXISTS songs(
     song_id VARCHAR(25) PRIMARY KEY,
-    title VARCHAR(100) NOT NULL,
+    title VARCHAR(200) NOT NULL,
     artist_id VARCHAR(25) NOT NULL,
     year INT NOT NULL,
     duration FLOAT NOT NULL
