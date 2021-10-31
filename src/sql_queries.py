@@ -138,7 +138,7 @@ region 'us-west-2';
 copy_staging_events = """
 copy staging_events from 's3://udacity-dend/log_data'
 iam_role '{}'
-format as json 'auto'
+format as json 's3://udacity-dend/log_json_path.json'
 region 'us-west-2';
 """.format(
     DWH_ROLE_ARN
