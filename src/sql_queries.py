@@ -146,4 +146,17 @@ region 'us-west-2';
 
 copy_queries = [copy_staging_songs, copy_staging_events]
 # copy_queries = [copy_staging_events]
+
 # TODO: Add insert table query for fact and dimension table
+insert_into_user = """
+INSERT INTO users (
+user_id, first_name, last_name, gender, level
+)
+SELECT DISTINCT
+user_id, first_name, last_name, gender, level
+FROM staging_events
+WHERE 
+user_id IS NOT NULL
+AND
+user_id NOT IN (SELECT DISTINCT user_id FROM users)
+"""
