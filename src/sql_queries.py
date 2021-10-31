@@ -24,37 +24,37 @@ drop_table_queries = [
 create_staging_songs = """
 CREATE TABLE IF NOT EXISTS staging_songs(
     num_songs INT PRIMARY KEY,
-    artist_id VARCHAR NOT NULL,
+    artist_id VARCHAR,
     artist_latitude FLOAT,
     artist_longitude FLOAT,
-    artist_location VARCHAR NOT NULL,
-    artist_name VARCHAR NOT NULL,
-    song_id VARCHAR NOT NULL,
-    title VARCHAR NOT NULL,
-    duration FLOAT NOT NULL,
-    year INT NOT NULL
+    artist_location VARCHAR,
+    artist_name VARCHAR,
+    song_id VARCHAR,
+    title VARCHAR,
+    duration FLOAT,
+    year INT
 )
 """
 create_staging_events = """
 CREATE TABLE IF NOT EXISTS staging_events(
-    artist VARCHAR(100) NOT NULL,
-    auth VARCHAR(100) NOT NULL,
-    first_name VARCHAR(50) NOT NULL,
-    gender CHAR(1) NOT NULL,
-    item_in_session INT NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    length FLOAT NOT NULL,
-    level VARCHAR(5) NOT NULL,
-    location VARCHAR(100) NOT NULL,
+    artist VARCHAR(100),
+    auth VARCHAR(100),
+    first_name VARCHAR(50),
+    gender CHAR(1),
+    item_in_session INT,
+    last_name VARCHAR(50),
+    length FLOAT,
+    level VARCHAR(5),
+    location VARCHAR(100),
     method VARCHAR(5),
     page VARCHAR(20),
     registration varchar(50),
     session_id int,
-    song VARCHAR(100) NOT NULL,
+    song VARCHAR(100),
     status INT,
     ts BIGINT,
     user_agent VARCHAR(100),
-    user_id INT NOT NULL
+    user_id INT
 )
 """
 
