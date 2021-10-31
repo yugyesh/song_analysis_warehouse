@@ -37,23 +37,23 @@ CREATE TABLE IF NOT EXISTS staging_songs(
 """
 create_staging_events = """
 CREATE TABLE IF NOT EXISTS staging_events(
-    artist VARCHAR(100),
-    auth VARCHAR(100),
-    first_name VARCHAR(50),
+    artist VARCHAR,
+    auth VARCHAR,
+    first_name VARCHAR,
     gender CHAR(1),
     item_in_session INT,
-    last_name VARCHAR(50),
+    last_name VARCHAR,
     length FLOAT,
     level VARCHAR(5),
-    location VARCHAR(100),
+    location VARCHAR,
     method VARCHAR(5),
     page VARCHAR(20),
     registration varchar(50),
     session_id int,
-    song VARCHAR(100),
+    song VARCHAR,
     status INT,
     ts BIGINT,
-    user_agent VARCHAR(100),
+    user_agent VARCHAR,
     user_id INT
 )
 """
@@ -63,12 +63,12 @@ CREATE TABLE IF NOT EXISTS songplays(
     songplay_id INT IDENTITY(0, 1) PRIMARY KEY,
     start_time TIMESTAMP NOT NULL,
     user_id INT NOT NULL,
-    song_id VARCHAR(25) NOT NULL,
-    artist_id VARCHAR(25) NOT NULL,
+    song_id VARCHAR NOT NULL,
+    artist_id VARCHAR NOT NULL,
     level VARCHAR(5) NOT NULL,
     session_id INT NOT NULL,
-    location VARCHAR(100) NOT NULL,
-    user_agent VARCHAR(100) NOT NULL
+    location VARCHAR NOT NULL,
+    user_agent VARCHAR NOT NULL
 )
 """
 
@@ -85,8 +85,8 @@ CREATE TABLE IF NOT EXISTS songs(
 create_artist = """
 CREATE TABLE IF NOT EXISTS artists(
     artist_id VARCHAR(25) PRIMARY KEY,
-    name VARCHAR(40) NOT NULL,
-    location VARCHAR(100) NOT NULL,
+    name VARCHAR NOT NULL,
+    location VARCHAR NOT NULL,
     latitude FLOAT,
     longitude FLOAT
 )
@@ -95,8 +95,8 @@ CREATE TABLE IF NOT EXISTS artists(
 create_user = """
 CREATE TABLE IF NOT EXISTS users(
     user_id INT PRIMARY KEY,
-    first_name VARCHAR(20) NOT NULL,
-    last_name VARCHAR(20) NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
     gender CHAR(1) NOT NULL,
     level VARCHAR(5) NOT NULL
 )
@@ -127,7 +127,7 @@ create_table_queries = [
 
 # copy data from s3 to staging area
 copy_staging_songs = """
-copy staging_songs from 's3://udacity-dend/song_data'
+copy staging_songs from 's3://udacity-dend/song_data/A/A'
 iam_role '{}'
 format as json 'auto'
 region 'us-west-2';
@@ -136,7 +136,7 @@ region 'us-west-2';
 )
 
 copy_staging_events = """
-    copy staging_events from 's3://udacity-dend/log_data'
+copy staging_events from 's3://udacity-dend/log_data'
 iam_role '{}'
 format as json 'auto'
 region 'us-west-2';
@@ -144,5 +144,6 @@ region 'us-west-2';
     DWH_ROLE_ARN
 )
 
-copy_queries = [copy_staging_songs]
+copy_queries = [copy_staging_songs, copy_staging_events]
+# copy_queries = [copy_staging_events]
 # TODO: Add insert table query for fact and dimension table
