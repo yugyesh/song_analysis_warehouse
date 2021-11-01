@@ -58,19 +58,19 @@ def drop_tables(cur, conn):
         print(error)
 
 
-def main():
-    """
-    - Drops (if exists) and Creates the sparkify database.
-    - Establishes connection with the sparkify database and gets
-    cursor to it.
-    - Drops all the tables.
-    - Creates all tables needed.
-    - Finally, closes the connection.
-    """
-    cur, conn = connect_aws()
+# def main():
+#     """
+#     - Drops (if exists) and Creates the sparkify database.
+#     - Establishes connection with the sparkify database and gets
+#     cursor to it.
+#     - Drops all the tables.
+#     - Creates all tables needed.
+#     - Finally, closes the connection.
+#     """
+#     cur, conn = connect_aws()
 
-    drop_tables(cur, conn)
+#     drop_tables(cur, conn)
 
-    create_tables(cur, conn)
+#     create_tables(cur, conn)
 
-    conn.close()
+#     conn.close()
