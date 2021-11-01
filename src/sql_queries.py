@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS time(
     week INT NOT NULL,
     month INT NOT NULL,
     year INT NOT NULL,
-    weekday VARCHAR(10) NOT NULL
+    weekday INT NOT NULL
 )
 """
 
@@ -145,9 +145,48 @@ region 'us-west-2';
 )
 
 copy_queries = [copy_staging_songs, copy_staging_events]
-# copy_queries = [copy_staging_events]
 
 # TODO: Add insert table query for fact and dimension table
+
+# fact table
+insert_into_songplay = """
+INSERT INTO songplays(
+start_time, user_id, song_id, artist_id, level, session_id, location, user_agent
+)
+SELECT DISTINCT
+to_timestamp(se.ts::text, 'YYYYMMDDHH24MISS') as start_time, se.user_id, ss.song_id, ss.artist_id, se.level, se.session_id, se.location, se.user_agent
+FROM staging_events se
+JOIN staging_songs ss
+on
+se.song = ss.title
+"""
+
+insert_into_song = """
+INSERT INTO songs(
+song_id, title, artist_id, year, duration
+)
+SELECT DISTINCT
+song_id, title, artist_id, year, duration
+FROM staging_songs
+WHERE
+song_id IS NOT NULL
+AND 
+song_id NOT IN (SELECT DISTINCT song_id FROM songs)
+"""
+
+insert_into_artist = """
+INSERT INTO artists(
+artist_id, name, location, latitude, longitude
+)
+SELECT DISTINCT
+artist_id, artist_name as name, artist_location, artist_latitude, artist_longitude
+FROM staging_songs
+WHERE
+artist_id IS NOT NULL
+AND
+artist_id NOT IN (SELECT DISTINCT artist_id FROM artists)
+"""
+
 insert_into_user = """
 INSERT INTO users (
 user_id, first_name, last_name, gender, level
@@ -160,3 +199,26 @@ user_id IS NOT NULL
 AND
 user_id NOT IN (SELECT DISTINCT user_id FROM users)
 """
+insert_into_time = """
+INSERT INTO time(
+start_time, hour, day, week, month, year, weekday 
+)
+SELECT DISTINCT
+to_timestamp(ts::text, 'YYYYMMDDHH24MISS') as start_time,
+EXTRACT(hour FROM start_time) as hour, 
+EXTRACT(day FROM start_time) as day, 
+EXTRACT(week FROM start_time) as week, 
+EXTRACT(month FROM start_time) as month, 
+EXTRACT(year FROM start_time) as year, 
+EXTRACT(DOW FROM start_time) as weekday 
+FROM staging_events
+WHERE start_time IS NOT NULL
+"""
+
+insert_queries = [
+    insert_into_songplay,
+    insert_into_song,
+    insert_into_artist,
+    insert_into_user,
+    insert_into_time,
+]
